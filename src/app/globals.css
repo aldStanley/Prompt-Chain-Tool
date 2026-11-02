@@ -1,37 +1,58 @@
+/* Warm oak, walnut and paper. Texture is drawn with CSS, so it stays crisp. */
 :root {
-  --bg: #f4f3eb;
-  --surface: #fffef8;
-  --ink: #20231d;
-  --muted: #707368;
-  --line: #dcddd1;
-  --soft: #ebecdf;
-  --acid: #dfff6c;
-  --side: #20241d;
-  --side-text: #f6f6e9;
-  --shadow: 0 5px 20px #20231d04;
+  --bg: #f2e9dc;
+  --surface: #fffaf1;
+  --ink: #392c22;
+  --muted: #7d6b59;
+  --line: #d9c7b1;
+  --soft: #eee0cc;
+  --acid: #9b6542;
+  --side: #493025;
+  --side-text: #f6e7d2;
+  --shadow: 0 7px 24px #593b2210, 0 1px 2px #593b2208;
+  --button-ink: #fff9ef;
+  --button-hover: #815033;
+  --wood-light: #d6b88b;
+  --wood-dark: #bf986b;
+  --wood-ink: #463021;
+  --focus: #a97649;
   color-scheme: light;
 }
 html[data-theme="dark"] {
-  --bg: #171b16;
-  --surface: #20261e;
-  --ink: #f1f3e6;
-  --muted: #a1aa98;
-  --line: #3b4336;
-  --soft: #2b3327;
-  --side: #12160f;
-  --shadow: none;
+  --bg: #211a16;
+  --surface: #30251e;
+  --ink: #f1e1cc;
+  --muted: #bda68e;
+  --line: #594332;
+  --soft: #3c2d23;
+  --acid: #d5a572;
+  --side: #291c15;
+  --shadow: 0 7px 24px #10090626;
+  --button-ink: #2a1b12;
+  --button-hover: #e1b88c;
+  --wood-light: #644832;
+  --wood-dark: #503726;
+  --wood-ink: #f1dfc6;
+  --focus: #d5a572;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
   html:not([data-theme="light"]) {
-    --bg: #171b16;
-    --surface: #20261e;
-    --ink: #f1f3e6;
-    --muted: #a1aa98;
-    --line: #3b4336;
-    --soft: #2b3327;
-    --side: #12160f;
-    --shadow: none;
+    --bg: #211a16;
+    --surface: #30251e;
+    --ink: #f1e1cc;
+    --muted: #bda68e;
+    --line: #594332;
+    --soft: #3c2d23;
+    --acid: #d5a572;
+    --side: #291c15;
+    --shadow: 0 7px 24px #10090626;
+    --button-ink: #2a1b12;
+    --button-hover: #e1b88c;
+    --wood-light: #644832;
+    --wood-dark: #503726;
+    --wood-ink: #f1dfc6;
+    --focus: #d5a572;
     color-scheme: dark;
   }
 }
@@ -43,7 +64,8 @@ body {
   background: var(--bg);
   color: var(--ink);
   font:
-    14px Arial,
+    14px "Avenir Next",
+    "Segoe UI",
     Helvetica,
     sans-serif;
 }
@@ -62,7 +84,7 @@ select {
 }
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid #79a500;
+  outline: 2px solid var(--focus);
 }
 button {
   border: 1px solid var(--line);
@@ -115,7 +137,7 @@ textarea {
 input:focus,
 textarea:focus,
 select:focus {
-  outline: 2px solid #91af52;
+  outline: 2px solid var(--focus);
   outline-offset: 1px;
 }
 fieldset {
@@ -129,11 +151,11 @@ small {
 }
 .primary {
   background: var(--acid);
-  color: #20251a;
+  color: var(--button-ink);
   border-color: var(--acid);
 }
 .primary:hover:not(:disabled) {
-  background: #cdee62;
+  background: var(--button-hover);
 }
 .workspace {
   display: grid;
@@ -144,7 +166,24 @@ small {
   position: sticky;
   top: 0;
   height: 100vh;
-  background: var(--side);
+  background-color: var(--side);
+  background-image:
+    repeating-linear-gradient(
+      91deg,
+      transparent 0 13px,
+      #f4d4a304 14px 15px,
+      transparent 16px 35px
+    ),
+    repeating-linear-gradient(
+      89deg,
+      transparent 0 53px,
+      #180c0810 54px 57px,
+      transparent 59px 94px
+    ),
+    linear-gradient(110deg, #b7803820, transparent 45%, #120a0920);
+  box-shadow:
+    inset -1px 0 #e3c49926,
+    3px 0 22px #2a160b13;
   color: var(--side-text);
   padding: 32px 22px;
   display: flex;
@@ -169,12 +208,12 @@ small {
   letter-spacing: 2px;
   font-weight: 400;
   margin-top: 7px;
-  color: #b5bdab;
+  color: #ceb59b;
 }
 .workspace-tag {
   font-size: 9px;
   letter-spacing: 1px;
-  color: #b6bda9;
+  color: #d8bea2;
   margin: 29px 0 40px;
   display: flex;
   align-items: center;
@@ -184,7 +223,7 @@ small {
   width: 5px;
   height: 5px;
   border-radius: 100%;
-  background: var(--acid);
+  background: #e7bb83;
 }
 .sidebar-heading {
   display: flex;
@@ -196,7 +235,7 @@ small {
 }
 .sidebar-heading > span {
   font: 11px monospace;
-  color: #a2ac96;
+  color: #c8ad91;
 }
 .new {
   width: 100%;
@@ -205,7 +244,7 @@ small {
 .sidebar > input {
   background: #ffffff09;
   border-color: #ffffff24;
-  color: #eff3df;
+  color: #f6e7d2;
   font-size: 12px;
   margin: 0 0 17px;
 }
@@ -217,7 +256,7 @@ small {
 .chain-link {
   text-align: left;
   background: transparent;
-  color: #b7c0ac;
+  color: #ddc7ad;
   border-color: transparent;
   display: flex;
   gap: 10px;
@@ -235,13 +274,13 @@ small {
   font-size: 10px;
   font-weight: 400;
   margin-top: 5px;
-  color: #9aa58c;
+  color: #c4a68a;
 }
 .chain-link.active,
 .chain-link:hover:not(:disabled) {
-  background: #dfff6c12;
-  border-color: #dfff6c25;
-  color: var(--acid);
+  background: #e7c99b18;
+  border-color: #e7c99b40;
+  color: #ffe3ba;
 }
 .chain-icon {
   font-size: 21px;
@@ -258,7 +297,7 @@ small {
 }
 .sidebar-bottom .eyebrow {
   font-size: 9px;
-  color: #d0d7c5;
+  color: #e7d2b7;
 }
 .muted {
   color: var(--muted);
@@ -267,7 +306,7 @@ small {
 }
 .sidebar-bottom > .muted {
   font-size: 12px;
-  color: #9faa93;
+  color: #c4ab92;
   line-height: 1.6;
   margin: 12px 0 24px;
 }
@@ -287,7 +326,7 @@ small {
 .sidebar .theme select {
   background: #ffffff08;
   border-color: #ffffff24;
-  color: #d6ddca;
+  color: #ead5ba;
 }
 .account {
   border-top: 1px solid #ffffff20;
@@ -303,13 +342,13 @@ small {
   text-overflow: ellipsis;
 }
 .account small {
-  color: #99a88d;
+  color: #c8ae91;
   font-size: 10px;
   margin-top: 5px;
 }
 .avatar {
-  background: #dfff6c22;
-  color: var(--acid);
+  background: #e7c99b22;
+  color: #f3d2a4;
   padding: 9px 12px;
   border-radius: 50%;
 }
@@ -431,8 +470,8 @@ small {
   border: 1px solid #bc4b3840;
 }
 .success {
-  background: #90b34618;
-  border: 1px solid #90b34650;
+  background: #a77b4518;
+  border: 1px solid #a77b4550;
 }
 .confirm {
   padding: 22px;
@@ -676,7 +715,7 @@ small {
   cursor: pointer;
 }
 .upload:focus-within {
-  outline: 2px solid #91af52;
+  outline: 2px solid var(--focus);
 }
 .upload img {
   width: 100%;
@@ -829,7 +868,7 @@ footer {
   margin: 20px 0 26px;
 }
 .acid {
-  color: #8aaa1f;
+  color: var(--acid);
 }
 .login-card > p:not(.eyebrow) {
   font-size: 15px;
@@ -1051,5 +1090,201 @@ footer {
   .login footer span,
   footer span {
     display: none;
+  }
+}
+
+/* The workshop's tactile materials: wood edges, paper panels, brass accents. */
+body {
+  background-image: repeating-linear-gradient(
+    0deg,
+    #a7784503 0 1px,
+    transparent 1px 4px
+  );
+}
+button {
+  border-radius: 8px;
+}
+input,
+textarea,
+select {
+  border-radius: 7px;
+  box-shadow: inset 0 1px 3px #4a2e1607;
+}
+.primary {
+  background-image: linear-gradient(#ffffff0a, #3018070c);
+  box-shadow:
+    inset 0 1px #ffffff24,
+    0 2px 4px #3f251216;
+}
+.sidebar .brand {
+  color: #edc999;
+}
+.sidebar .primary {
+  background-color: #dfb67f;
+  border-color: #dfb67f;
+  color: #38261b;
+}
+.sidebar .primary:hover:not(:disabled) {
+  background-color: #edc997;
+}
+.chain-link {
+  border-radius: 8px;
+}
+.chain-link.active {
+  box-shadow: inset 3px 0 #d6ab78;
+}
+.brand > span {
+  letter-spacing: 1.5px;
+}
+.topbar {
+  background: color-mix(in srgb, var(--surface) 65%, transparent);
+}
+.page-heading h1,
+.login-card h1,
+.runner h3,
+.empty h3 {
+  font-family:
+    "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -1px;
+}
+.page-heading h1 {
+  font-size: clamp(34px, 3.3vw, 48px);
+}
+.page-heading .eyebrow {
+  color: var(--acid);
+}
+.edition {
+  border-left: 1px solid var(--line);
+  padding-left: 22px;
+}
+.panel,
+.step-card,
+.media-card {
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+.step-top {
+  border-radius: 11px 11px 0 0;
+  color: var(--wood-ink);
+  background-color: var(--wood-light);
+  background-image:
+    repeating-linear-gradient(
+      2deg,
+      transparent 0 3px,
+      #7a48100a 4px,
+      transparent 5px 11px
+    ),
+    repeating-linear-gradient(
+      -1deg,
+      transparent 0 18px,
+      #fff2d114 19px 20px,
+      transparent 21px 37px
+    ),
+    linear-gradient(90deg, transparent, var(--wood-dark));
+  box-shadow: inset 0 1px #fff1d32b;
+  border-bottom-color: color-mix(in srgb, var(--wood-dark), var(--line));
+}
+.step-number {
+  background: #533824;
+  color: #f6e3c7;
+  border-radius: 50%;
+  min-width: 30px;
+  text-align: center;
+}
+.step-top strong {
+  letter-spacing: 0.2px;
+}
+.step-controls button {
+  color: var(--wood-ink);
+}
+.step-body {
+  padding: 22px;
+}
+.section-label > span {
+  border-radius: 4px;
+  color: var(--acid);
+}
+.badge {
+  border-radius: 20px;
+  background: var(--soft);
+  padding: 5px 10px;
+}
+.tabs .selected:after {
+  background: var(--acid);
+  height: 2px;
+}
+.upload {
+  border-radius: 8px;
+  background: var(--bg);
+  border-color: var(--line);
+}
+.runner .panel {
+  border-top: 4px solid var(--wood-dark);
+}
+.runner h3 {
+  font-size: 34px;
+  line-height: 1.08;
+}
+.tip {
+  padding-top: 26px;
+}
+.tip > span {
+  color: var(--acid);
+}
+.add-step {
+  border-color: var(--line);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--surface) 40%, transparent);
+}
+.login {
+  position: relative;
+}
+.login:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 9px;
+  background:
+    repeating-linear-gradient(
+      2deg,
+      transparent 0 3px,
+      #7a481015 4px,
+      transparent 5px 11px
+    ),
+    linear-gradient(90deg, var(--wood-light), var(--wood-dark));
+}
+.login-card {
+  max-width: 630px;
+  padding: 42px;
+  border: 1px solid var(--line);
+  border-top: 5px solid var(--wood-dark);
+  border-radius: 4px 4px 14px 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.login-card h1 {
+  letter-spacing: -2.5px;
+}
+.login-flow {
+  color: var(--muted);
+  border-block: 1px solid var(--line);
+  padding: 17px 0;
+}
+@media (max-width: 650px) {
+  .login-card {
+    padding: 28px 23px;
+    margin-top: 50px;
+  }
+  .login-card h1 {
+    font-size: 52px;
+  }
+  .runner h3 {
+    font-size: 31px;
+  }
+  .step-body {
+    padding: 18px;
   }
 }
