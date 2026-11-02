@@ -151,3 +151,33 @@ test("stale version is rejected before any provider call", async () => {
     global.fetch = original;
   }
 });
+
+test("one transient network failure retries the same step and completes", async () => {
+  const c = client();
+  const original = global.fetch;
+  let count = 0;
+  global.fetch = async () => {
+    count++;
+    if (count === 1) throw Error("Transient network failure");
+    return response(
+      count === 4
+        ? JSON.stringify({ captions: ["one", "two", "three", "four", "five"] })
+        : "intermediate output",
+    );
+  };
+  try {
+    await runChain(c, "chain", 1, "path", Buffer.from("x"), "image/png");
+    assert.equal(count, 4);
+    assert.equal(
+      c.calls.filter((c) => c.name === "admin_log_response").length,
+      4,
+    );
+    assert.equal(
+      c.calls.find((c) => c.name === "studio_finish_generation").args
+        .output_captions.length,
+      5,
+    );
+  } finally {
+    global.fetch = original;
+  }
+});

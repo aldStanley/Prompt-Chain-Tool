@@ -53,53 +53,71 @@ export async function runChain(
             ]
           : [{ text: previous }];
       const time = Date.now();
-      let response: Response;
+      let response!: Response;
       let payload;
-      try {
-        response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(step.model_identifier)}:generateContent`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-goog-api-key": process.env.GEMINI_API_KEY!,
-            },
-            body: JSON.stringify({
-              systemInstruction: { parts: [{ text: step.system_prompt }] },
-              contents: [{ role: "user", parts }],
-              generationConfig: {
-                maxOutputTokens: 2000,
-                ...(json
-                  ? {
-                      responseMimeType: "application/json",
-                      responseJsonSchema: {
-                        type: "object",
-                        properties: {
-                          captions: {
-                            type: "array",
-                            items: { type: "string" },
-                            minItems: 1,
-                            maxItems: 10,
-                          },
-                        },
-                        required: ["captions"],
-                        additionalProperties: false,
-                      },
-                    }
-                  : {}),
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(step.model_identifier)}:generateContent`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "x-goog-api-key": process.env.GEMINI_API_KEY!,
               },
-            }),
-            signal: AbortSignal.timeout(
-              Math.min(45000, Math.max(1, deadline - Date.now())),
-            ),
-          },
-        );
-        payload = await response.json();
-      } catch {
-        throw new AccessError(
-          502,
-          `“${step.name}” timed out or returned invalid data. Retry the run.`,
-        );
+              body: JSON.stringify({
+                systemInstruction: { parts: [{ text: step.system_prompt }] },
+                contents: [{ role: "user", parts }],
+                generationConfig: {
+                  maxOutputTokens: 2000,
+                  ...(json
+                    ? {
+                        responseMimeType: "application/json",
+                        responseJsonSchema: {
+                          type: "object",
+                          properties: {
+                            captions: {
+                              type: "array",
+                              items: { type: "string" },
+                              minItems: 1,
+                              maxItems: 10,
+                            },
+                          },
+                          required: ["captions"],
+                          additionalProperties: false,
+                        },
+                      }
+                    : {}),
+                },
+              }),
+              signal: AbortSignal.timeout(
+                Math.min(45000, Math.max(1, deadline - Date.now())),
+              ),
+            },
+          );
+          payload = await response.json();
+          break;
+        } catch {
+          const failed = await client.rpc("admin_log_response", {
+            target_request: request_id,
+            target_step: step.id,
+            target_model: step.model_id,
+            prompt: step.system_prompt,
+            output: null,
+            payload: {
+              error: "Network timeout or invalid provider JSON",
+              attempt,
+            },
+            status_code: null,
+            duration_ms: Date.now() - time,
+          });
+          if (failed.error) throw failed.error;
+          if (attempt === 2 || Date.now() >= deadline)
+            throw new AccessError(
+              502,
+              `“${step.name}” timed out or returned invalid data after retrying. Try again later.`,
+            );
+        }
       }
       const candidate = payload.candidates?.[0];
       const output = (candidate?.content?.parts ?? [])
